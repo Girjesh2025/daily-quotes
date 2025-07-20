@@ -51,11 +51,83 @@ function changeBackground() {
     };
 }
 
+// Fallback quotes for when API fails
+const fallbackQuotes = [
+    {
+        content: "The only way to do great work is to love what you do.",
+        author: "Steve Jobs"
+    },
+    {
+        content: "Innovation distinguishes between a leader and a follower.",
+        author: "Steve Jobs"
+    },
+    {
+        content: "Life is what happens to you while you're busy making other plans.",
+        author: "John Lennon"
+    },
+    {
+        content: "The future belongs to those who believe in the beauty of their dreams.",
+        author: "Eleanor Roosevelt"
+    },
+    {
+        content: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+        author: "Winston Churchill"
+    },
+    {
+        content: "The only impossible journey is the one you never begin.",
+        author: "Tony Robbins"
+    },
+    {
+        content: "In the middle of difficulty lies opportunity.",
+        author: "Albert Einstein"
+    },
+    {
+        content: "Believe you can and you're halfway there.",
+        author: "Theodore Roosevelt"
+    }
+];
+
+// Get random fallback quote
+function getFallbackQuote() {
+    const randomIndex = Math.floor(Math.random() * fallbackQuotes.length);
+    return fallbackQuotes[randomIndex];
+}
+
 // Fetch new quote from API
 async function getNewQuote() {
     showLoader();
     try {
-        const response = await fetch('https://api.quotable.io/random');
+        let response;
+        
+        // Check if AbortController is supported
+        if (typeof AbortController !== 'undefined') {
+            // Use AbortController for timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+            
+            response = await fetch('https://api.quotable.io/random', {
+                signal: controller.signal,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            clearTimeout(timeoutId);
+        } else {
+            // Fallback for browsers without AbortController
+            response = await fetch('https://api.quotable.io/random', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+        }
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
         
         // Update quote text with fade effect
@@ -73,8 +145,23 @@ async function getNewQuote() {
         // Change background
         changeBackground();
     } catch (error) {
-        quoteText.textContent = 'Oops! Something went wrong. Please try again.';
-        quoteAuthor.textContent = '— Error';
+        console.log('API failed, using fallback quote:', error.message);
+        // Use fallback quote instead of showing error
+        const fallbackQuote = getFallbackQuote();
+        
+        quoteText.style.opacity = 0;
+        quoteAuthor.style.opacity = 0;
+        
+        setTimeout(() => {
+            quoteText.textContent = fallbackQuote.content;
+            quoteAuthor.textContent = `— ${fallbackQuote.author}`;
+            
+            quoteText.style.opacity = 1;
+            quoteAuthor.style.opacity = 1;
+        }, 500);
+        
+        // Still change background even with fallback
+        changeBackground();
     } finally {
         hideLoader();
     }
@@ -85,10 +172,32 @@ async function copyQuote() {
     const quote = `"${quoteText.textContent}" ${quoteAuthor.textContent}`;
     
     try {
-        await navigator.clipboard.writeText(quote);
-        showToast('Quote copied to clipboard!');
+        // Try modern clipboard API first
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(quote);
+            showToast('Quote copied to clipboard!');
+        } else {
+            // Fallback method for older browsers
+            const textArea = document.createElement("textarea");
+            textArea.value = quote;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast('Quote copied to clipboard!');
+            } catch (err) {
+                showToast('Please manually copy the quote');
+            }
+            
+            textArea.remove();
+        }
     } catch (err) {
-        showToast('Failed to copy quote');
+        showToast('Copy not supported on this device');
     }
 }
 
