@@ -3,6 +3,7 @@ const quoteText = document.getElementById('quote-text');
 const quoteAuthor = document.getElementById('quote-author');
 const newQuoteBtn = document.getElementById('new-quote-btn');
 const copyQuoteBtn = document.getElementById('copy-quote-btn');
+const tweetQuoteBtn = document.getElementById('tweet-quote-btn');
 const loader = document.querySelector('.loader');
 
 // Background Images from Unsplash (Nature and Inspiration themed)
@@ -21,6 +22,7 @@ const backgroundImages = [
 document.addEventListener('DOMContentLoaded', getNewQuote);
 newQuoteBtn.addEventListener('click', getNewQuote);
 copyQuoteBtn.addEventListener('click', copyQuote);
+tweetQuoteBtn.addEventListener('click', tweetQuote);
 
 // Auto refresh quote every 10 seconds
 setInterval(getNewQuote, 10000);
@@ -88,6 +90,13 @@ async function copyQuote() {
     } catch (err) {
         showToast('Failed to copy quote');
     }
+}
+
+// Tweet current quote
+function tweetQuote() {
+    const quote = `"${quoteText.textContent}" ${quoteAuthor.textContent}`;
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(quote)}`;
+    window.open(tweetUrl, '_blank');
 }
 
 // Show toast notification
