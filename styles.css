@@ -183,22 +183,6 @@ body {
     border-radius: 8px;
     backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 0.5rem;
-}
-
-.footer .api-attribution {
-    font-size: 0.7rem;
-    opacity: 0.8;
-    margin-bottom: 0;
-}
-
-.footer .api-attribution a {
-    color: rgba(255, 255, 255, 0.9);
-    text-decoration: none;
-}
-
-.footer .api-attribution a:hover {
-    text-decoration: underline;
 }
 
 /* Mobile Responsive */
