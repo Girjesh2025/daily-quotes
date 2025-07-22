@@ -233,7 +233,7 @@ async function getNewQuote() {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
             
-            response = await fetch('https://api.quotable.io/random', {
+            response = await fetch('https://zenquotes.io/api/random', {
                 signal: controller.signal,
                 headers: {
                     'Accept': 'application/json',
@@ -244,7 +244,7 @@ async function getNewQuote() {
             clearTimeout(timeoutId);
         } else {
             // Fallback for browsers without AbortController
-            response = await fetch('https://api.quotable.io/random', {
+            response = await fetch('https://zenquotes.io/api/random', {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
@@ -258,13 +258,16 @@ async function getNewQuote() {
         
         const data = await response.json();
         
+        // ZenQuotes API returns an array, so we get the first quote
+        const quote = data[0];
+        
         // Update quote text with fade effect
         quoteText.style.opacity = 0;
         quoteAuthor.style.opacity = 0;
         
         setTimeout(() => {
-            quoteText.textContent = data.content;
-            quoteAuthor.textContent = `— ${data.author}`;
+            quoteText.textContent = quote.q;
+            quoteAuthor.textContent = `— ${quote.a}`;
             
             quoteText.style.opacity = 1;
             quoteAuthor.style.opacity = 1;
