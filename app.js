@@ -84,6 +84,134 @@ const fallbackQuotes = [
     {
         content: "Believe you can and you're halfway there.",
         author: "Theodore Roosevelt"
+    },
+    {
+        content: "It is during our darkest moments that we must focus to see the light.",
+        author: "Aristotle"
+    },
+    {
+        content: "The only person you are destined to become is the person you decide to be.",
+        author: "Ralph Waldo Emerson"
+    },
+    {
+        content: "Your time is limited, don't waste it living someone else's life.",
+        author: "Steve Jobs"
+    },
+    {
+        content: "The way to get started is to quit talking and begin doing.",
+        author: "Walt Disney"
+    },
+    {
+        content: "Don't be afraid to give up the good to go for the great.",
+        author: "John D. Rockefeller"
+    },
+    {
+        content: "If you want to achieve greatness stop asking for permission.",
+        author: "Anonymous"
+    },
+    {
+        content: "The best revenge is massive success.",
+        author: "Frank Sinatra"
+    },
+    {
+        content: "People who are crazy enough to think they can change the world, are the ones who do.",
+        author: "Rob Siltanen"
+    },
+    {
+        content: "Failure will never overtake me if my determination to succeed is strong enough.",
+        author: "Og Mandino"
+    },
+    {
+        content: "Entrepreneurs are great at dealing with uncertainty and also very good at minimizing risk. That's the classic entrepreneur.",
+        author: "Mohnish Pabrai"
+    },
+    {
+        content: "We may encounter many defeats but we must not be defeated.",
+        author: "Maya Angelou"
+    },
+    {
+        content: "Knowing is not enough; we must apply. Wishing is not enough; we must do.",
+        author: "Johann Wolfgang Von Goethe"
+    },
+    {
+        content: "Whether you think you can or you think you can't, you're right.",
+        author: "Henry Ford"
+    },
+    {
+        content: "The future belongs to those who prepare for it today.",
+        author: "Malcolm X"
+    },
+    {
+        content: "Some people want it to happen, some wish it would happen, others make it happen.",
+        author: "Michael Jordan"
+    },
+    {
+        content: "Great things never come from comfort zones.",
+        author: "Anonymous"
+    },
+    {
+        content: "Dream big and dare to fail.",
+        author: "Norman Vaughan"
+    },
+    {
+        content: "What lies behind us and what lies before us are tiny matters compared to what lies within us.",
+        author: "Ralph Waldo Emerson"
+    },
+    {
+        content: "Success is walking from failure to failure with no loss of enthusiasm.",
+        author: "Winston Churchill"
+    },
+    {
+        content: "The only limit to our realization of tomorrow will be our doubts of today.",
+        author: "Franklin D. Roosevelt"
+    },
+    {
+        content: "You miss 100% of the shots you don't take.",
+        author: "Wayne Gretzky"
+    },
+    {
+        content: "I have learned throughout my life as a composer chiefly through my mistakes and pursuits of false assumptions, not by my exposure to founts of wisdom and knowledge.",
+        author: "Igor Stravinsky"
+    },
+    {
+        content: "A person who never made a mistake never tried anything new.",
+        author: "Albert Einstein"
+    },
+    {
+        content: "The person who says it cannot be done should not interrupt the person who is doing it.",
+        author: "Chinese Proverb"
+    },
+    {
+        content: "There are no traffic jams along the extra mile.",
+        author: "Roger Staubach"
+    },
+    {
+        content: "It is never too late to be what you might have been.",
+        author: "George Eliot"
+    },
+    {
+        content: "You become what you believe.",
+        author: "Oprah Winfrey"
+    },
+    {
+        content: "I would rather die of passion than of boredom.",
+        author: "Vincent van Gogh"
+    },
+    {
+        content: "A truly rich man is one whose children run into his arms when his hands are empty.",
+        author: "Anonymous"
+    },
+    {
+        content: "If you want your children to be intelligent, read them fairy tales. If you want them to be more intelligent, read them more fairy tales.",
+        author: "Albert Einstein"
+    },
+    {
+        content: "It is impossible to live without failing at something, unless you live so cautiously that you might as well not have lived at all.",
+        author: "J.K. Rowling"
+    },
+    {
+        content: "Remember that not getting what you want is sometimes a wonderful stroke of luck.",
+        author: "Dalai Lama"
     }
 ];
 
