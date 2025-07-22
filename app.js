@@ -19,13 +19,25 @@ const backgroundImages = [
 ];
 
 // Event Listeners
-document.addEventListener('DOMContentLoaded', getNewQuote);
+document.addEventListener('DOMContentLoaded', () => {
+    // Try to fetch batch of quotes on initial load, then show first quote
+    fetchBatchQuotes().finally(() => {
+        getNewQuote();
+    });
+});
 newQuoteBtn.addEventListener('click', getNewQuote);
 copyQuoteBtn.addEventListener('click', copyQuote);
 tweetQuoteBtn.addEventListener('click', tweetQuote);
 
+// Store fetched quotes and current index
+let fetchedQuotes = [];
+let currentQuoteIndex = 0;
+
 // Auto refresh quote every 10 seconds
 setInterval(getNewQuote, 10000);
+
+// Fetch quotes every 2 hours
+setInterval(fetchBatchQuotes, 2 * 60 * 60 * 1000);
 
 // Show loading spinner
 function showLoader() {
@@ -221,81 +233,106 @@ function getFallbackQuote() {
     return fallbackQuotes[randomIndex];
 }
 
+// Fetch batch of quotes from API to rotate through locally
+async function fetchBatchQuotes() {
+    try {
+        console.log('Fetching batch of quotes...');
+        const response = await fetch('https://zenquotes.io/api/quotes', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            const quotes = await response.json();
+            fetchedQuotes = quotes.map(quote => ({
+                content: quote.q,
+                author: quote.a
+            }));
+            currentQuoteIndex = 0;
+            console.log(`Successfully fetched ${fetchedQuotes.length} quotes`);
+            return true;
+        }
+    } catch (error) {
+        console.log('Failed to fetch batch quotes:', error.message);
+    }
+    return false;
+}
+
+// Get next quote from fetched quotes or fallback
+function getNextQuote() {
+    if (fetchedQuotes.length > 0) {
+        const quote = fetchedQuotes[currentQuoteIndex];
+        currentQuoteIndex = (currentQuoteIndex + 1) % fetchedQuotes.length;
+        return quote;
+    }
+    return getFallbackQuote();
+}
+
 // Fetch new quote from API
 async function getNewQuote() {
     showLoader();
-    try {
-        let response;
-        
-        // Check if AbortController is supported
-        if (typeof AbortController !== 'undefined') {
-            // Use AbortController for timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
-            
-            response = await fetch('https://zenquotes.io/api/random', {
-                signal: controller.signal,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            clearTimeout(timeoutId);
-        } else {
-            // Fallback for browsers without AbortController
-            response = await fetch('https://zenquotes.io/api/random', {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-        }
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        // ZenQuotes API returns an array, so we get the first quote
-        const quote = data[0];
+    
+    // First, try to use quotes from our batch
+    if (fetchedQuotes.length > 0) {
+        const quote = getNextQuote();
         
         // Update quote text with fade effect
         quoteText.style.opacity = 0;
         quoteAuthor.style.opacity = 0;
         
         setTimeout(() => {
-            quoteText.textContent = quote.q;
-            quoteAuthor.textContent = `— ${quote.a}`;
+            quoteText.textContent = quote.content;
+            quoteAuthor.textContent = `— ${quote.author}`;
             
             quoteText.style.opacity = 1;
             quoteAuthor.style.opacity = 1;
         }, 500);
         
-        // Change background
         changeBackground();
-    } catch (error) {
-        console.log('API failed, using fallback quote:', error.message);
-        // Use fallback quote instead of showing error
-        const fallbackQuote = getFallbackQuote();
+        hideLoader();
+        return;
+    }
+    
+    // If no batch quotes available, try to fetch a batch first
+    const batchFetched = await fetchBatchQuotes();
+    if (batchFetched && fetchedQuotes.length > 0) {
+        const quote = getNextQuote();
         
         quoteText.style.opacity = 0;
         quoteAuthor.style.opacity = 0;
         
         setTimeout(() => {
-            quoteText.textContent = fallbackQuote.content;
-            quoteAuthor.textContent = `— ${fallbackQuote.author}`;
+            quoteText.textContent = quote.content;
+            quoteAuthor.textContent = `— ${quote.author}`;
             
             quoteText.style.opacity = 1;
             quoteAuthor.style.opacity = 1;
         }, 500);
         
-        // Still change background even with fallback
         changeBackground();
-    } finally {
         hideLoader();
+        return;
     }
+    
+    // If batch fetch failed, use fallback quotes
+    console.log('Using fallback quotes');
+    const fallbackQuote = getFallbackQuote();
+    
+    quoteText.style.opacity = 0;
+    quoteAuthor.style.opacity = 0;
+    
+    setTimeout(() => {
+        quoteText.textContent = fallbackQuote.content;
+        quoteAuthor.textContent = `— ${fallbackQuote.author}`;
+        
+        quoteText.style.opacity = 1;
+        quoteAuthor.style.opacity = 1;
+    }, 500);
+    
+    changeBackground();
+    hideLoader();
 }
 
 // Copy quote to clipboard
